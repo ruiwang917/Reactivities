@@ -1,5 +1,7 @@
-import { DateArg, format } from "date-fns";
+import { format } from "date-fns";
 
-export default function formatDate(date: DateArg<Date>) {
-  return format(date, "dd MMM yyyy h:mm a");
+export default function formatDate(date: Date) {
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+
+  return format(dateObj, "dd MMM yyyy h:mm a");
 }

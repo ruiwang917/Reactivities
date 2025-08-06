@@ -1,6 +1,7 @@
 import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router";
 import formatDate from "../../../lib/util/util";
+import { Activity } from "../../../lib/types";
 
 type Props = {
   activity: Activity;
@@ -22,11 +23,7 @@ export default function ActivityDetailsHeader({ activity }: Props) {
       }}
     >
       {isCancelled && (
-        <Badge
-          sx={{ position: "absolute", left: 40, top: 20, zIndex: 1000 }}
-          color="error"
-          badgeContent="Cancelled"
-        />
+        <Badge sx={{ position: "absolute", left: 40, top: 20, zIndex: 1000 }} color="error" badgeContent="Cancelled" />
       )}
       <CardMedia
         component="img"
@@ -45,8 +42,7 @@ export default function ActivityDetailsHeader({ activity }: Props) {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "flex-end",
-          background:
-            "linear-gradient(to top, rgba(0, 0, 0, 1.0), transparent)",
+          background: "linear-gradient(to top, rgba(0, 0, 0, 1.0), transparent)",
           boxSizing: "border-box",
         }}
       >
@@ -55,15 +51,10 @@ export default function ActivityDetailsHeader({ activity }: Props) {
           <Typography variant="h4" sx={{ fontWeight: "bold" }}>
             {activity.title}
           </Typography>
-          <Typography variant="subtitle1">
-            {formatDate(activity.date)}
-          </Typography>
+          <Typography variant="subtitle1">{formatDate(activity.date)}</Typography>
           <Typography variant="subtitle2">
             Hosted by{" "}
-            <Link
-              to={`/profiles/username`}
-              style={{ color: "white", fontWeight: "bold" }}
-            >
+            <Link to={`/profiles/username`} style={{ color: "white", fontWeight: "bold" }}>
               Bob
             </Link>
           </Typography>
@@ -73,18 +64,14 @@ export default function ActivityDetailsHeader({ activity }: Props) {
         <Box sx={{ display: "flex", gap: 2 }}>
           {isHost ? (
             <>
-              <Button
-                variant="contained"
-                color={isCancelled ? "success" : "error"}
-                onClick={() => {}}
-              >
+              <Button variant="contained" color={isCancelled ? "success" : "error"} onClick={() => {}}>
                 {isCancelled ? "Re-activate Activity" : "Cancel Activity"}
               </Button>
               <Button
                 variant="contained"
                 color="primary"
                 component={Link}
-                to={`/manage/activityId`}
+                to={`/manage/${activity.id}`}
                 disabled={isCancelled}
               >
                 Manage Event
