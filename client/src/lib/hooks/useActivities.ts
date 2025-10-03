@@ -1,30 +1,34 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agent from "../api/agent";
 import { useLocation } from "react-router";
-import { Activity } from "../types";
+import { useAccount } from "./useAccount";
 
 export const useActivities = (id?: string) => {
   const queryClient = useQueryClient();
+  const { currentUser } = useAccount();
   const location = useLocation();
 
-  const { data: activities, isPending } = useQuery({
+  // activities list
+  const { data: activities, isLoading } = useQuery({
     queryKey: ["activities"],
     queryFn: async () => {
       const response = await agent.get<Activity[]>("/activities");
       return response.data;
     },
-    enabled: !id && location.pathname === "/activities",
+    enabled: !id && location.pathname === "/activities" && !!currentUser,
   });
 
+  // activity details
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
     queryKey: ["activities", id],
     queryFn: async () => {
       const response = await agent.get<Activity>(`/activities/${id}`);
       return response.data;
     },
-    enabled: !!id,
+    enabled: !!id && !!currentUser,
   });
 
+  // update activity
   const updateActivity = useMutation({
     mutationFn: async (activity: Activity) => {
       await agent.put<Activity>("/activities", activity);
@@ -34,6 +38,7 @@ export const useActivities = (id?: string) => {
     },
   });
 
+  // create activity
   const createActivity = useMutation({
     mutationFn: async (activity: Activity) => {
       const response = await agent.post<Activity>("/activities", activity);
@@ -44,6 +49,7 @@ export const useActivities = (id?: string) => {
     },
   });
 
+  // delete activity
   const deleteActivity = useMutation({
     mutationFn: async (id: string) => {
       await agent.delete(`/activities/${id}`);
@@ -55,7 +61,7 @@ export const useActivities = (id?: string) => {
 
   return {
     activities,
-    isPending,
+    isLoading,
     updateActivity,
     createActivity,
     deleteActivity,
