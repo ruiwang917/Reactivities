@@ -11,4 +11,5 @@ public class User : IdentityUser
 
     // navigation
     public ICollection<ActivityAttendee> Activities { get; set; } = [];
+    public ICollection<Photo> Photos { get; set; } = [];
 }
