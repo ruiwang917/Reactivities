@@ -401,3 +401,4 @@ FodyWeavers.xsd
 
 API/appsettings.json
 API/reactivities.db
+API/appsettings.Development.json
