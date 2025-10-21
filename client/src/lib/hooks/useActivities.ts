@@ -18,10 +18,12 @@ export const useActivities = (id?: string) => {
         enabled: !id && location.pathname === "/activities" && !!currentUser,
         select: (data) => {
             return data.map((activitiy) => {
+                const host = activitiy.attendees.find((a) => a.id === activitiy.hostId);
                 return {
                     ...activitiy,
                     isHost: currentUser?.id === activitiy.hostId,
                     isGoing: activitiy.attendees.some((x) => x.id === currentUser?.id),
+                    hostImageUrl: host?.imageUrl,
                 };
             });
         },
@@ -36,10 +38,12 @@ export const useActivities = (id?: string) => {
         },
         enabled: !!id && !!currentUser,
         select: (data) => {
+            const host = data.attendees.find((a) => a.id === data.hostId);
             return {
                 ...data,
                 isHost: currentUser?.id === data.hostId,
                 isGoing: data.attendees.some((x) => x.id === currentUser?.id),
+                hostImageUrl: host?.imageUrl,
             };
         },
     });

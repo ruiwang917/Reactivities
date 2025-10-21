@@ -9,6 +9,7 @@ export const useAccount = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
+    // Login user
     const loginUser = useMutation({
         mutationFn: async (creds: LoginSchema) => {
             await agent.post("/login?useCookies=true", creds);
@@ -18,6 +19,7 @@ export const useAccount = () => {
         },
     });
 
+    // Register user
     const registerUser = useMutation({
         mutationFn: async (creds: registerSchema) => {
             await agent.post("/account/register", creds);
@@ -28,6 +30,7 @@ export const useAccount = () => {
         },
     });
 
+    // Logout user
     const logoutUser = useMutation({
         mutationFn: async () => {
             await agent.post("/account/logout");
@@ -39,13 +42,14 @@ export const useAccount = () => {
         },
     });
 
+    // Fetch current user info
     const { data: currentUser, isLoading: isLoadingUserInfo } = useQuery({
         queryKey: ["user"],
         queryFn: async () => {
             const response = await agent.get<User>("/account/user-info");
             return response.data;
         },
-        enabled: !queryClient.getQueryData(["user"]), // && location.pathname !== "/login" && location.pathname !== "/register",
+        enabled: !queryClient.getQueryData(["user"]),
     });
 
     return {
