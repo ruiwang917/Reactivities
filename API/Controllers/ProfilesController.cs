@@ -43,4 +43,11 @@ public class ProfilesController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new GetProfile.Query { UserId = userId }));
     }
+
+    // Endpoint to edit a user's profile (username and bio)
+    [HttpPut]
+    public async Task<ActionResult> EditProfile(EditProfile.Command command)
+    {
+        return HandleResult(await Mediator.Send(command));
+    }
 }

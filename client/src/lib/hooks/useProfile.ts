@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import agent from "../api/agent";
 import { useMemo } from "react";
+import { EditProfileSchema } from "../schemas/editProfileSchema";
 
 export const useProfile = (id?: string) => {
     const queryClient = useQueryClient();
@@ -54,6 +55,7 @@ export const useProfile = (id?: string) => {
         },
     });
 
+    // Set main photo
     const setMainPhoto = useMutation({
         mutationFn: async (photo: Photo) => {
             await agent.put(`/profiles/${photo.id}/setMain`);
@@ -76,6 +78,7 @@ export const useProfile = (id?: string) => {
         },
     });
 
+    // Delete photo
     const deletePhoto = useMutation({
         mutationFn: async (photoId: string) => {
             await agent.delete(`/profiles/${photoId}/photos`);
@@ -83,6 +86,28 @@ export const useProfile = (id?: string) => {
         onSuccess: (_, photoId) => {
             queryClient.setQueryData(["photos", id], (photos: Photo[]) => {
                 return photos?.filter((x) => x.id !== photoId);
+            });
+        },
+    });
+
+    const updateProfile = useMutation({
+        mutationFn: async (profile: EditProfileSchema) => {
+            await agent.put(`/profiles`, profile);
+        },
+        onSuccess: (_, profile) => {
+            queryClient.setQueryData(["profile", id], (data: Profile) => {
+                if (!data) return data;
+                return {
+                    ...data,
+                    ...profile,
+                };
+            });
+            queryClient.setQueryData(["user"], (data: User) => {
+                if (!data) return data;
+                return {
+                    ...data,
+                    displayName: profile.displayName,
+                };
             });
         },
     });
@@ -101,5 +126,6 @@ export const useProfile = (id?: string) => {
         uploadPhoto,
         setMainPhoto,
         deletePhoto,
+        updateProfile,
     };
 };
