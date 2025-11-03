@@ -23,7 +23,7 @@ public class GetProfile
         public async Task<Result<UserProfile>> Handle(Query request, CancellationToken cancellationToken)
         {
             var profile = await context.Users
-                .ProjectTo<UserProfile>(mapper.ConfigurationProvider)
+                .ProjectTo<UserProfile>(mapper.ConfigurationProvider, new { currentUserId = userAccessor.GetUserId() })
                 .SingleOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
             return profile == null
